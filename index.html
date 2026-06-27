@@ -156,9 +156,9 @@ code{color:#aa0}
 <button onclick="clearChat()">clear</button>
 </div>
 <div class="chat-token">
-<label>hf token (optional, for higher limits):</label>
-<input id="hfToken" placeholder="hf_..." />
-<button onclick="saveToken()">save</button>
+<label>gemini api key (free at aistudio.google.com/apikey):</label>
+<input id="apiKey" placeholder="AIza..." />
+<button onclick="saveKey()">save</button>
 </div>
 </div>
 
@@ -287,10 +287,10 @@ function identify(){var h=document.getElementById('hashIdIn').value;var l=h.leng
 var chatMsgs=[];
 function addMsg(role,text){var b=document.getElementById('chatBox');var d=document.createElement('div');d.className='chat-msg '+role;d.textContent=text;b.appendChild(d);b.scrollTop=b.scrollHeight}
 function clearChat(){document.getElementById('chatBox').innerHTML='';chatMsgs=[]}
-function saveToken(){var t=document.getElementById('hfToken').value;if(t){localStorage.setItem('hf_token',t);addMsg('bot','token saved')}else{localStorage.removeItem('hf_token');addMsg('bot','token removed')}}
-function sendMsg(){var input=document.getElementById('chatIn');var msg=input.value.trim();if(!msg)return;input.value='';addMsg('user',msg);chatMsgs.push({role:'user',content:msg});addMsg('bot','thinking...');var token=document.getElementById('hfToken').value||localStorage.getItem('hf_token')||'';var headers={'Content-Type':'application/json'};if(token)headers['Authorization']='Bearer '+token;var prompt='';chatMsgs.forEach(function(m){prompt+='<|'+m.role+'|>\n'+m.content+'\n'});prompt+='<|assistant|>\n';fetch('https://api-inference.huggingface.co/models/microsoft/Phi-3-mini-4k-instruct',{method:'POST',headers:headers,body:JSON.stringify({inputs:prompt,parameters:{max_new_tokens:512,temperature:0.7,do_sample:true}})}).then(function(r){return r.json()}).then(function(d){var box=document.getElementById('chatBox');box.removeChild(box.lastChild);if(d.error){addMsg('err','error: '+d.error);return}var text=d[0]&&d[0].generated_text||'';var reply=text.substring(prompt.length).trim();if(!reply)reply='(no response)';addMsg('bot',reply);chatMsgs.push({role:'assistant',content:reply})}).catch(function(e){var box=document.getElementById('chatBox');box.removeChild(box.lastChild);addMsg('err','error: '+e.message)})}
-// load saved token
-(function(){var t=localStorage.getItem('hf_token');if(t)document.getElementById('hfToken').value=t})()
+function saveKey(){var k=document.getElementById('apiKey').value;if(k){localStorage.setItem('gemini_key',k);addMsg('bot','api key saved')}else{localStorage.removeItem('gemini_key');addMsg('bot','api key removed')}}
+function sendMsg(){var input=document.getElementById('chatIn');var msg=input.value.trim();if(!msg)return;var key=document.getElementById('apiKey').value||localStorage.getItem('gemini_key');if(!key){addMsg('err','add your free gemini api key first (aistudio.google.com/apikey)');return}input.value='';addMsg('user',msg);chatMsgs.push({role:'user',content:msg});var history=[];chatMsgs.forEach(function(m){history.push({role:m.role==='assistant'?'model':m.role,parts:[{text:m.content}]})});addMsg('bot','thinking...');fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+key,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:history,generationConfig:{temperature:0.7,maxOutputTokens:512}})}).then(function(r){return r.json()}).then(function(d){var box=document.getElementById('chatBox');box.removeChild(box.lastChild);if(d.error){addMsg('err','api error: '+(d.error.message||JSON.stringify(d.error)));return}var reply=d.candidates&&d.candidates[0]&&d.candidates[0].content&&d.candidates[0].content.parts[0]&&d.candidates[0].content.parts[0].text||'(no response)';addMsg('bot',reply);chatMsgs.push({role:'assistant',content:reply})}).catch(function(e){var box=document.getElementById('chatBox');box.removeChild(box.lastChild);addMsg('err','error: '+e.message)})}
+// load saved key
+(function(){var k=localStorage.getItem('gemini_key');if(k)document.getElementById('apiKey').value=k})()
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
 </body>
