@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NullSec8 - Terminal</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0D1117;color:#00FF00;font-family:'Courier New',monospace;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}
+.terminal{background:#0D1117;border:2px solid #00FF00;border-radius:10px;width:100%;max-width:800px;box-shadow:0 0 30px rgba(0,255,0,0.1)}
+.term-header{background:#1a1f2e;padding:10px 15px;border-radius:8px 8px 0 0;display:flex;align-items:center;gap:8px;border-bottom:1px solid #00FF00}
+.dot{width:12px;height:12px;border-radius:50%}
+.dot.r{background:#FF5555}.dot.y{background:#FFAA00}.dot.g{background:#55FF55}
+.term-title{color:#888;font-size:12px;margin-left:10px}
+.term-body{padding:20px;min-height:400px;overflow-y:auto}
+.line{white-space:pre-wrap;word-break:break-all;margin-bottom:4px;font-size:14px}
+.prompt{color:#00FF00}.cmd{color:#FFFFFF}.output{color:#00AA00}.info{color:#FFAA00}.dim{color:#666}
+.cursor{display:inline-block;width:8px;height:16px;background:#00FF00;animation:blink 1s infinite;margin-left:4px;vertical-align:middle}
+@keyframes blink{50%{opacity:0}}
+.input-line{display:flex;align-items:center;margin-top:10px}
+.input-line span{color:#00FF00}
+.input-line input{background:transparent;border:none;color:#00FF00;font-family:'Courier New',monospace;font-size:14px;outline:none;flex:1;caret-color:#00FF00}
+.input-line input::placeholder{color:#004400}
+a{color:#00FF00;text-decoration:underline}a:hover{color:#55FF55}
+</style>
+</head>
+<body>
+<div class="terminal">
+<div class="term-header">
+<div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+<span class="term-title">nullsec8@github:~/portfolio</span>
+</div>
+<div class="term-body" id="output">
+<div class="line output">
+  ____  _   _ _ _  ____ ____ ___ ____  <br>
+ / ___|| | | | | |/ ___/ ___|_ _|  _ \ <br>
+ \___ \| | | | | | |  _\___ \| || | | |<br>
+  ___) | |_| | | | |_| |___) | || |_| |<br>
+ |____/ \___/|_|_|\____|____/___|____/ <br>
+</div>
+<div class="line dim">Welcome to NullSec8's portfolio terminal</div>
+<div class="line dim">Type <span class="cmd">help</span> for available commands</div>
+<div class="line"><br></div>
+<div class="line"><span class="prompt">nullsec8@github:~$</span><span class="cmd"> neofetch</span></div>
+<div class="line output">NullSec8@github</div>
+<div class="line output">OS: Arch Linux x86_64</div>
+<div class="line output">Host: GitHub Actions Runner</div>
+<div class="line output">Age: 17</div>
+<div class="line output">From: Kosovo</div>
+<div class="line output">Role: Full Stack Developer / Automation Engineer</div>
+<div class="line output">Shell: bash 5.2.37</div>
+<div class="line output">Uptime: 365 days</div>
+<div class="line"><br></div>
+<div class="line"><span class="prompt">nullsec8@github:~$</span><span class="cmd"> cat about.txt</span></div>
+<div class="line output">I'm a developer from Kosovo passionate about automation,</div>
+<div class="line output">web development, cybersecurity, and open source.</div>
+<div class="line output">I like building things that work automatically,</div>
+<div class="line output">breaking things to understand them,</div>
+<div class="line output">and learning something new every day.</div>
+<div class="line"><br></div>
+<div class="line"><span class="prompt">nullsec8@github:~$</span><span class="cmd"> ls skills/</span></div>
+<div class="line output">python/   javascript/   typescript/   node.js/   react/</div>
+<div class="line output">next.js/   github-actions/   docker/   linux/   bash/   powershell/</div>
+<div class="line"><br></div>
+<div class="line"><span class="prompt">nullsec8@github:~$</span><span class="cmd"> cat achievements.log</span></div>
+<div class="line output">[ACQUIRED] Pull Shark Gold ........ 128+ PRs merged</div>
+<div class="line output">[ACQUIRED] YOLO ................... Merged without review</div>
+<div class="line output">[ACQUIRED] Quickdraw .............. Merged in seconds</div>
+<div class="line output">[PROGRESS] 365-Day Streak ......... In progress</div>
+<div class="line"><br></div>
+<div class="line"><span class="prompt">nullsec8@github:~$</span><span class="cmd"> help</span></div>
+<div class="line output">Available commands:</div>
+<div class="line output">  about      - About me</div>
+<div class="line output">  skills     - My tech stack</div>
+<div class="line output">  projects   - My projects</div>
+<div class="line output">  contact    - Where to find me</div>
+<div class="line output">  clear      - Clear terminal</div>
+<div class="line output">  help       - Show this message</div>
+<div class="line"><br></div>
+<div class="input-line">
+<span class="prompt">nullsec8@github:~$&nbsp;</span>
+<input type="text" id="cmdInput" placeholder="type a command..." autofocus />
+</div>
+</div>
+</div>
+
+<script>
+const cmds = {
+  about: [
+    '<span class="info">NullSec8</span>',
+    '<span class="output">----------------</span>',
+    '<span class="output">Age: 17</span>',
+    '<span class="output">From: Kosovo</span>',
+    '<span class="output">Role: Full Stack Developer / Automation Engineer</span>',
+    '<span class="output">Interests: automation, web dev, security, open source</span>',
+    '<span class="output">Motto: Automate everything, break nothing</span>',
+  ],
+  skills: [
+    '<span class="info">Languages & Tools</span>',
+    '<span class="output">----------------</span>',
+    '<span class="output">Python | JavaScript | TypeScript | Node.js</span>',
+    '<span class="output">React | Next.js | GitHub Actions | Docker</span>',
+    '<span class="output">Linux | Bash | PowerShell | HTML/CSS</span>',
+    '<span class="output">PostgreSQL | MongoDB</span>',
+  ],
+  projects: [
+    '<span class="info">Projects</span>',
+    '<span class="output">----------------</span>',
+    '<span class="output"><a href="https://github.com/NullSec8/daily-log" target="_blank">daily-log</a> - Automated daily commits & PRs</span>',
+    '<span class="output"><a href="https://github.com/NullSec8/nullsec-terminal" target="_blank">nullsec-terminal</a> - Terminal portfolio (you are here)</span>',
+    '<span class="output"><a href="https://github.com/NullSec8" target="_blank">github.com/NullSec8</a> - More coming soon</span>',
+  ],
+  contact: [
+    '<span class="info">Contact</span>',
+    '<span class="output">----------------</span>',
+    '<span class="output">GitHub: <a href="https://github.com/NullSec8" target="_blank">NullSec8</a></span>',
+  ],
+  clear: [],
+  neofetch: [
+    '<span class="output">NullSec8@github</span>',
+    '<span class="output">OS: Arch Linux x86_64</span>',
+    '<span class="output">Host: GitHub Actions Runner</span>',
+    '<span class="output">Age: 17</span>',
+    '<span class="output">From: Kosovo</span>',
+    '<span class="output">Role: Full Stack Developer / Automation Engineer</span>',
+    '<span class="output">Shell: bash 5.2.37</span>',
+    '<span class="output">Uptime: 365 days</span>',
+  ],
+};
+
+const output = document.getElementById('output');
+const input = document.getElementById('cmdInput');
+
+input.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    const val = this.value.trim().toLowerCase();
+    const promptLine = document.createElement('div');
+    promptLine.className = 'line';
+    promptLine.innerHTML = '<span class="prompt">nullsec8@github:~$</span><span class="cmd"> ' + this.value + '</span>';
+    output.insertBefore(promptLine, output.lastElementChild);
+
+    if (val === 'clear') {
+      while (output.children.length > 1) {
+        output.removeChild(output.firstChild);
+      }
+    } else if (cmds[val]) {
+      cmds[val].forEach(function(line) {
+        const l = document.createElement('div');
+        l.className = 'line';
+        l.innerHTML = line;
+        output.insertBefore(l, output.lastElementChild);
+      });
+    } else if (val !== '') {
+      const l = document.createElement('div');
+      l.className = 'line';
+      l.innerHTML = 'bash: ' + this.value + ': command not found';
+      output.insertBefore(l, output.lastElementChild);
+    }
+
+    this.value = '';
+    output.scrollTop = output.scrollHeight;
+    output.lastElementChild.scrollIntoView();
+  }
+});
+</script>
+</body>
+</html>
