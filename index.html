@@ -6,81 +6,54 @@
 <title>NullSec8 - Terminal</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#0D1117;color:#00FF00;font-family:'Courier New',monospace;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}
-.terminal{background:#0D1117;border:2px solid #00FF00;border-radius:10px;width:100%;max-width:800px;box-shadow:0 0 30px rgba(0,255,0,0.1)}
-.term-header{background:#1a1f2e;padding:10px 15px;border-radius:8px 8px 0 0;display:flex;align-items:center;gap:8px;border-bottom:1px solid #00FF00}
+body{background:#0D1117;color:#00FF00;font-family:'Courier New',monospace;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px;overflow:hidden}
+.terminal{background:#0D1117;border:2px solid #00FF00;border-radius:10px;width:100%;max-width:850px;box-shadow:0 0 40px rgba(0,255,0,0.15);position:relative;z-index:1}
+.term-header{background:#1a1f2e;padding:10px 15px;border-radius:8px 8px 0 0;display:flex;align-items:center;gap:8px;border-bottom:1px solid #00FF33}
 .dot{width:12px;height:12px;border-radius:50%}
 .dot.r{background:#FF5555}.dot.y{background:#FFAA00}.dot.g{background:#55FF55}
-.term-title{color:#888;font-size:12px;margin-left:10px}
-.term-body{padding:20px;min-height:400px;overflow-y:auto}
-.line{white-space:pre-wrap;word-break:break-all;margin-bottom:4px;font-size:14px}
-.prompt{color:#00FF00}.cmd{color:#FFFFFF}.output{color:#00AA00}.info{color:#FFAA00}.dim{color:#666}
-.cursor{display:inline-block;width:8px;height:16px;background:#00FF00;animation:blink 1s infinite;margin-left:4px;vertical-align:middle}
-@keyframes blink{50%{opacity:0}}
-.input-line{display:flex;align-items:center;margin-top:10px}
-.input-line span{color:#00FF00}
+.term-title{color:#666;font-size:12px;margin-left:10px}
+.term-body{padding:20px;height:450px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#00FF33 #0D1117}
+.term-body::-webkit-scrollbar{width:4px}
+.term-body::-webkit-scrollbar-track{background:#0D1117}
+.term-body::-webkit-scrollbar-thumb{background:#00FF33;border-radius:2px}
+.line{white-space:pre-wrap;word-break:break-word;margin-bottom:3px;font-size:14px;line-height:1.5}
+.prompt{color:#00FF00}.cmd{color:#FFFFFF}.output{color:#00CC00}.info{color:#FFAA00}.dim{color:#444}.error{color:#FF4444}.highlight{color:#00FFFF}.rainbow{background:linear-gradient(90deg,#FF0000,#FFAA00,#FFFF00,#00FF00,#00FFFF,#0000FF,#AA00FF);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.input-line{display:flex;align-items:center;margin-top:8px;border-top:1px solid #1a3a1a;padding-top:10px}
+.input-line span{color:#00FF00;white-space:nowrap}
 .input-line input{background:transparent;border:none;color:#00FF00;font-family:'Courier New',monospace;font-size:14px;outline:none;flex:1;caret-color:#00FF00}
-.input-line input::placeholder{color:#004400}
+.input-line input::placeholder{color:#0a3a0a}
 a{color:#00FF00;text-decoration:underline}a:hover{color:#55FF55}
+.matrix-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:0.03;pointer-events:none;font-size:10px;color:#00FF00;overflow:hidden;white-space:nowrap}
+@keyframes boot{0%{opacity:0}100%{opacity:1}}
+.boot-line{animation:boot 0.5s ease forwards;opacity:0}
 </style>
 </head>
 <body>
+<div class="matrix-bg" id="matrixBg"></div>
 <div class="terminal">
 <div class="term-header">
 <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
 <span class="term-title">nullsec8@github:~/portfolio</span>
 </div>
 <div class="term-body" id="output">
-<div class="line output">
+<div class="line dim boot-line">Booting NullSec Terminal v2.0 ...</div>
+<div class="line dim boot-line">Loading modules: [<span class="cmd">##########</span>] 100%</div>
+<div class="line dim boot-line" style="animation-delay:0.3s">Starting shell: bash 5.2.37</div>
+<div class="line dim boot-line" style="animation-delay:0.6s">NullSec8@github connected</div>
+<div class="line" style="animation-delay:0.9s"><br></div>
+<div class="line output" style="animation-delay:1s">
   ____  _   _ _ _  ____ ____ ___ ____  <br>
  / ___|| | | | | |/ ___/ ___|_ _|  _ \ <br>
  \___ \| | | | | | |  _\___ \| || | | |<br>
   ___) | |_| | | | |_| |___) | || |_| |<br>
  |____/ \___/|_|_|\____|____/___|____/ <br>
 </div>
-<div class="line dim">Welcome to NullSec8's portfolio terminal</div>
-<div class="line dim">Type <span class="cmd">help</span> for available commands</div>
-<div class="line"><br></div>
-<div class="line"><span class="prompt">nullsec8@github:~$</span><span class="cmd"> neofetch</span></div>
-<div class="line output">NullSec8@github</div>
-<div class="line output">OS: Arch Linux x86_64</div>
-<div class="line output">Host: GitHub Actions Runner</div>
-<div class="line output">Age: 17</div>
-<div class="line output">From: Kosovo</div>
-<div class="line output">Role: Full Stack Developer / Automation Engineer</div>
-<div class="line output">Shell: bash 5.2.37</div>
-<div class="line output">Uptime: 365 days</div>
-<div class="line"><br></div>
-<div class="line"><span class="prompt">nullsec8@github:~$</span><span class="cmd"> cat about.txt</span></div>
-<div class="line output">I'm a developer from Kosovo passionate about automation,</div>
-<div class="line output">web development, cybersecurity, and open source.</div>
-<div class="line output">I like building things that work automatically,</div>
-<div class="line output">breaking things to understand them,</div>
-<div class="line output">and learning something new every day.</div>
-<div class="line"><br></div>
-<div class="line"><span class="prompt">nullsec8@github:~$</span><span class="cmd"> ls skills/</span></div>
-<div class="line output">python/   javascript/   typescript/   node.js/   react/</div>
-<div class="line output">next.js/   github-actions/   docker/   linux/   bash/   powershell/</div>
-<div class="line"><br></div>
-<div class="line"><span class="prompt">nullsec8@github:~$</span><span class="cmd"> cat achievements.log</span></div>
-<div class="line output">[ACQUIRED] Pull Shark Gold ........ 128+ PRs merged</div>
-<div class="line output">[ACQUIRED] YOLO ................... Merged without review</div>
-<div class="line output">[ACQUIRED] Quickdraw .............. Merged in seconds</div>
-<div class="line output">[PROGRESS] 365-Day Streak ......... In progress</div>
-<div class="line"><br></div>
-<div class="line"><span class="prompt">nullsec8@github:~$</span><span class="cmd"> help</span></div>
-<div class="line output">Available commands:</div>
-<div class="line output">  about      - About me</div>
-<div class="line output">  skills     - My tech stack</div>
-<div class="line output">  projects   - My projects</div>
-<div class="line output">  contact    - Where to find me</div>
-<div class="line output">  clear      - Clear terminal</div>
-<div class="line output">  help       - Show this message</div>
-<div class="line"><br></div>
+<div class="line dim" style="animation-delay:1.2s">Type <span class="cmd">help</span> for available commands</div>
+<div class="line" style="animation-delay:1.3s"><br></div>
+</div>
 <div class="input-line">
 <span class="prompt">nullsec8@github:~$&nbsp;</span>
-<input type="text" id="cmdInput" placeholder="type a command..." autofocus />
-</div>
+<input type="text" id="cmdInput" placeholder="type a command..." autofocus spellcheck="false" autocomplete="off" />
 </div>
 </div>
 
@@ -101,7 +74,7 @@ const cmds = {
     '<span class="output">Python | JavaScript | TypeScript | Node.js</span>',
     '<span class="output">React | Next.js | GitHub Actions | Docker</span>',
     '<span class="output">Linux | Bash | PowerShell | HTML/CSS</span>',
-    '<span class="output">PostgreSQL | MongoDB</span>',
+    '<span class="output">PostgreSQL | MongoDB | Redis | Nginx</span>',
   ],
   projects: [
     '<span class="info">Projects</span>',
@@ -120,48 +93,142 @@ const cmds = {
     '<span class="output">NullSec8@github</span>',
     '<span class="output">OS: Arch Linux x86_64</span>',
     '<span class="output">Host: GitHub Actions Runner</span>',
+    '<span class="output">Kernel: 6.0.0-arch1-1</span>',
     '<span class="output">Age: 17</span>',
     '<span class="output">From: Kosovo</span>',
     '<span class="output">Role: Full Stack Developer / Automation Engineer</span>',
     '<span class="output">Shell: bash 5.2.37</span>',
     '<span class="output">Uptime: 365 days</span>',
+    '<span class="output">Packages: 42 (npm), 16 (pip)</span>',
   ],
+  whoami: ['<span class="output">nullsec8</span>'],
+  date: ['<span class="output">' + new Date().toLocaleString() + '</span>'],
+  uptime: ['<span class="output">up 365 days, 0 users, load average: 0.00 0.01 0.05</span>'],
+  uname: ['<span class="output">Linux github-actions 6.0.0-arch1-1 #1 SMP PREEMPT_DYNAMIC x86_64 GNU/Linux</span>'],
+  pwd: ['<span class="output">/home/nullsec8/portfolio</span>'],
+  ls: [
+    '<span class="output">about.txt   skills/   projects/   contact   achievements.log   README.md</span>',
+  ],
+  help: [
+    '<span class="info">Available commands:</span>',
+    '<span class="output">----------------</span>',
+    '<span class="cmd">about</span>      <span class="dim">- About me</span>',
+    '<span class="cmd">skills</span>     <span class="dim">- My tech stack</span>',
+    '<span class="cmd">projects</span>   <span class="dim">- My projects</span>',
+    '<span class="cmd">contact</span>    <span class="dim">- Where to find me</span>',
+    '<span class="cmd">neofetch</span>   <span class="dim">- System info</span>',
+    '<span class="cmd">whoami</span>     <span class="dim">- Display username</span>',
+    '<span class="cmd">date</span>       <span class="dim">- Current date</span>',
+    '<span class="cmd">uptime</span>     <span class="dim">- System uptime</span>',
+    '<span class="cmd">uname</span>      <span class="dim">- Kernel info</span>',
+    '<span class="cmd">pwd</span>        <span class="dim">- Current directory</span>',
+    '<span class="cmd">ls</span>         <span class="dim">- List files</span>',
+    '<span class="cmd">echo</span>       <span class="dim">- Print text</span>',
+    '<span class="cmd">sudo</span>       <span class="dim">- Try it ;)</span>',
+    '<span class="cmd">matrix</span>     <span class="dim">- Toggle matrix rain</span>',
+    '<span class="cmd"></span>        <span class="dim"></span>',
+    '<span class="cmd">clear</span>      <span class="dim">- Clear terminal</span>',
+    '<span class="cmd">help</span>       <span class="dim">- Show this</span>',
+  ],
+  sudo: [
+    '<span class="error">sudo: permission denied</span>',
+    '<span class="dim">This incident will be reported.</span>',
+  ],
+  matrix: ['<span class="highlight">Matrix rain toggled!</span>'],
 };
+
+const history = [];
+let histIdx = -1;
+let matrixOn = false;
+let matrixInterval = null;
 
 const output = document.getElementById('output');
 const input = document.getElementById('cmdInput');
 
+function addLine(html, className) {
+  const div = document.createElement('div');
+  div.className = 'line ' + (className || '');
+  div.innerHTML = html;
+  output.insertBefore(div, output.lastElementChild);
+  div.scrollIntoView();
+}
+
 input.addEventListener('keydown', function(e) {
   if (e.key === 'Enter') {
-    const val = this.value.trim().toLowerCase();
-    const promptLine = document.createElement('div');
-    promptLine.className = 'line';
-    promptLine.innerHTML = '<span class="prompt">nullsec8@github:~$</span><span class="cmd"> ' + this.value + '</span>';
-    output.insertBefore(promptLine, output.lastElementChild);
+    const val = this.value.trim();
+    addLine('<span class="prompt">nullsec8@github:~$</span><span class="cmd"> ' + val + '</span>');
+    
+    if (val !== '') history.push(val);
+    histIdx = history.length;
 
-    if (val === 'clear') {
-      while (output.children.length > 1) {
-        output.removeChild(output.firstChild);
-      }
-    } else if (cmds[val]) {
-      cmds[val].forEach(function(line) {
-        const l = document.createElement('div');
-        l.className = 'line';
-        l.innerHTML = line;
-        output.insertBefore(l, output.lastElementChild);
-      });
-    } else if (val !== '') {
-      const l = document.createElement('div');
-      l.className = 'line';
-      l.innerHTML = 'bash: ' + this.value + ': command not found';
-      output.insertBefore(l, output.lastElementChild);
+    const lower = val.toLowerCase().split(' ');
+    const cmd = lower[0];
+    const args = lower.slice(1).join(' ');
+
+    if (cmd === 'clear') {
+      while (output.children.length > 1) output.removeChild(output.firstChild);
+    } else if (cmd === 'echo') {
+      addLine(args || '', 'output');
+    } else if (cmd === 'matrix') {
+      matrixOn = !matrixOn;
+      if (matrixOn) startMatrix(); else stopMatrix();
+      addLine(cmds.matrix[0], 'highlight');
+    } else if (cmd === 'ls' && args) {
+      addLine('ls: cannot access ' + args + ': No such file or directory', 'error');
+    } else if (cmds[cmd]) {
+      cmds[cmd].forEach(function(line) { addLine(line, 'output'); });
+    } else if (cmd !== '') {
+      addLine('bash: ' + cmd + ': command not found', 'error');
     }
 
     this.value = '';
     output.scrollTop = output.scrollHeight;
-    output.lastElementChild.scrollIntoView();
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (histIdx > 0) { histIdx--; this.value = history[histIdx]; }
+  } else if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    if (histIdx < history.length - 1) { histIdx++; this.value = history[histIdx]; }
+    else { histIdx = history.length; this.value = ''; }
+  } else if (e.key === 'Tab') {
+    e.preventDefault();
+    const val = this.value.toLowerCase();
+    const matches = Object.keys(cmds).filter(function(c) { return c.startsWith(val) && c !== 'clear'; });
+    if (matches.length === 1) this.value = matches[0];
+    else if (matches.length > 1) {
+      addLine('<span class="dim">' + matches.join('  ') + '</span>');
+    }
   }
 });
+
+function startMatrix() {
+  const bg = document.getElementById('matrixBg');
+  bg.innerHTML = '';
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()';
+  for (let i = 0; i < 50; i++) {
+    const col = document.createElement('div');
+    col.style.cssText = 'position:absolute;top:' + (Math.random() * 100) + '%;left:' + (i * 2) + '%;font-size:10px;color:#00FF00';
+    col.textContent = chars[Math.floor(Math.random() * chars.length)];
+    bg.appendChild(col);
+  }
+  let lastTime = 0;
+  matrixInterval = setInterval(function() {
+    const cols = bg.children;
+    for (let i = 0; i < cols.length; i++) {
+      const top = parseFloat(cols[i].style.top);
+      cols[i].style.top = ((top + 2) % 100) + '%';
+      if (Math.random() < 0.1) cols[i].textContent = chars[Math.floor(Math.random() * chars.length)];
+    }
+  }, 100);
+}
+
+function stopMatrix() {
+  if (matrixInterval) clearInterval(matrixInterval);
+  document.getElementById('matrixBg').innerHTML = '';
+}
+
+input.focus();
+document.addEventListener('click', function() { input.focus(); });
 </script>
 </body>
 </html>
