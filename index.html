@@ -3,232 +3,490 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NullSec8 - Terminal</title>
+<title>NullSec Toolkit</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#0D1117;color:#00FF00;font-family:'Courier New',monospace;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px;overflow:hidden}
-.terminal{background:#0D1117;border:2px solid #00FF00;border-radius:10px;width:100%;max-width:850px;box-shadow:0 0 40px rgba(0,255,0,0.15);position:relative;z-index:1}
-.term-header{background:#1a1f2e;padding:10px 15px;border-radius:8px 8px 0 0;display:flex;align-items:center;gap:8px;border-bottom:1px solid #00FF33}
-.dot{width:12px;height:12px;border-radius:50%}
-.dot.r{background:#FF5555}.dot.y{background:#FFAA00}.dot.g{background:#55FF55}
-.term-title{color:#666;font-size:12px;margin-left:10px}
-.term-body{padding:20px;height:450px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#00FF33 #0D1117}
-.term-body::-webkit-scrollbar{width:4px}
-.term-body::-webkit-scrollbar-track{background:#0D1117}
-.term-body::-webkit-scrollbar-thumb{background:#00FF33;border-radius:2px}
-.line{white-space:pre-wrap;word-break:break-word;margin-bottom:3px;font-size:14px;line-height:1.5}
-.prompt{color:#00FF00}.cmd{color:#FFFFFF}.output{color:#00CC00}.info{color:#FFAA00}.dim{color:#444}.error{color:#FF4444}.highlight{color:#00FFFF}.rainbow{background:linear-gradient(90deg,#FF0000,#FFAA00,#FFFF00,#00FF00,#00FFFF,#0000FF,#AA00FF);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.input-line{display:flex;align-items:center;margin-top:8px;border-top:1px solid #1a3a1a;padding-top:10px}
-.input-line span{color:#00FF00;white-space:nowrap}
-.input-line input{background:transparent;border:none;color:#00FF00;font-family:'Courier New',monospace;font-size:14px;outline:none;flex:1;caret-color:#00FF00}
-.input-line input::placeholder{color:#0a3a0a}
-a{color:#00FF00;text-decoration:underline}a:hover{color:#55FF55}
-.matrix-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:0.03;pointer-events:none;font-size:10px;color:#00FF00;overflow:hidden;white-space:nowrap}
-@keyframes boot{0%{opacity:0}100%{opacity:1}}
-.boot-line{animation:boot 0.5s ease forwards;opacity:0}
+body{background:#0D1117;color:#00FF00;font-family:'Courier New',monospace}
+nav{background:#1a1f2e;border-bottom:1px solid #00FF33;padding:12px 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+nav .logo{font-size:18px;font-weight:bold;color:#00FF00}
+nav a{color:#888;text-decoration:none;font-size:13px;padding:4px 10px;border-radius:4px;cursor:pointer}
+nav a:hover{color:#00FF00;background:#0D1117}
+nav a.active{color:#00FF00;background:#0D1117;border:1px solid #00FF33}
+.container{padding:20px;max-width:1200px;margin:auto}
+.section{display:none}
+.section.active{display:block}
+h2{margin-bottom:15px;color:#00FF00}
+h3{margin:10px 0;color:#FFAA00}
+.card{background:#1a1f2e;border:1px solid #00FF33;border-radius:8px;padding:20px;margin-bottom:20px}
+.card h3{margin-top:0}
+label{display:block;margin:10px 0 5px;color:#888;font-size:12px}
+input,select,textarea{width:100%;padding:10px;background:#0D1117;border:1px solid #333;color:#00FF00;border-radius:4px;font-family:'Courier New',monospace;font-size:13px}
+input:focus,select:focus,textarea:focus{border-color:#00FF00;outline:none}
+button{padding:10px 25px;background:#00FF00;color:#000;border:none;border-radius:4px;cursor:pointer;font-family:'Courier New',monospace;font-weight:bold;font-size:13px;margin:10px 5px 0 0}
+button:hover{background:#00CC00}
+button.sec{background:#1a1f2e;color:#00FF00;border:1px solid #00FF33}
+.output-box{background:#0D1117;border:1px solid #333;border-radius:4px;padding:15px;margin-top:10px;min-height:40px;font-size:13px;word-break:break-all}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:8px 12px;text-align:left;border-bottom:1px solid #1a3a1a}
+th{color:#FFAA00;cursor:pointer}
+th:hover{color:#00FF00}
+td{color:#ccc}
+tr:hover td{color:#00FF00}
+.search-box{margin-bottom:15px}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;margin:2px}
+.badge.green{background:#003300;color:#00FF00}
+.badge.yellow{background:#332200;color:#FFAA00}
+.badge.blue{background:#002233;color:#00FFFF}
+@media(max-width:768px){.two-col{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<div class="matrix-bg" id="matrixBg"></div>
-<div class="terminal">
-<div class="term-header">
-<div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
-<span class="term-title">nullsec8@github:~/portfolio</span>
+
+<nav>
+<span class="logo">NullSec Toolkit</span>
+<a class="active" onclick="showSection('tools')">Tools</a>
+<a onclick="showSection('linux')">Linux Cheats</a>
+<a onclick="showSection('github')">GitHub Stats</a>
+<a onclick="showSection('ctf')">CTF Kit</a>
+<a href="https://github.com/NullSec8/nullsec-terminal" target="_blank" style="margin-left:auto;color:#00FF00">GitHub</a>
+</nav>
+
+<div class="container">
+
+<!-- SECTION 1: SECURITY TOOLS -->
+<div id="section-tools" class="section active">
+<h2>Security Toolkit</h2>
+<div class="row">
+
+<div class="card">
+<h3>Hash Generator</h3>
+<label>Input text</label>
+<input type="text" id="hashInput" placeholder="Enter text to hash..." oninput="generateHash()" />
+<div class="output-box" id="hashOutput">MD5: <br>SHA256: <br>SHA512: </div>
 </div>
-<div class="term-body" id="output">
-<div class="line dim boot-line">Booting NullSec Terminal v2.0 ...</div>
-<div class="line dim boot-line">Loading modules: [<span class="cmd">##########</span>] 100%</div>
-<div class="line dim boot-line" style="animation-delay:0.3s">Starting shell: bash 5.2.37</div>
-<div class="line dim boot-line" style="animation-delay:0.6s">NullSec8@github connected</div>
-<div class="line" style="animation-delay:0.9s"><br></div>
-<div class="line output" style="animation-delay:1s">
-  ____  _   _ _ _  ____ ____ ___ ____  <br>
- / ___|| | | | | |/ ___/ ___|_ _|  _ \ <br>
- \___ \| | | | | | |  _\___ \| || | | |<br>
-  ___) | |_| | | | |_| |___) | || |_| |<br>
- |____/ \___/|_|_|\____|____/___|____/ <br>
+
+<div class="card">
+<h3>Base64 Encode / Decode</h3>
+<label>Text</label>
+<input type="text" id="b64Input" placeholder="Enter text..." />
+<button onclick="b64Encode()">Encode</button>
+<button onclick="b64Decode()" class="sec">Decode</button>
+<div class="output-box" id="b64Output"></div>
 </div>
-<div class="line dim" style="animation-delay:1.2s">Type <span class="cmd">help</span> for available commands</div>
-<div class="line" style="animation-delay:1.3s"><br></div>
+
+<div class="card">
+<h3>Password Generator</h3>
+<label>Length: <span id="pwLen">16</span></label>
+<input type="range" min="4" max="64" value="16" oninput="document.getElementById('pwLen').textContent=this.value" />
+<label>Options</label>
+<select id="pwOptions" multiple style="height:80px">
+<option value="upper" selected>A-Z</option>
+<option value="lower" selected>a-z</option>
+<option value="digits" selected>0-9</option>
+<option value="symbols" selected>!@#$%^&amp;</option>
+</select>
+<button onclick="genPassword()">Generate</button>
+<button onclick="copyPassword()" class="sec">Copy</button>
+<div class="output-box" id="pwOutput"></div>
 </div>
-<div class="input-line">
-<span class="prompt">nullsec8@github:~$&nbsp;</span>
-<input type="text" id="cmdInput" placeholder="type a command..." autofocus spellcheck="false" autocomplete="off" />
+
+<div class="card">
+<h3>Port Scanner</h3>
+<label>Host / IP</label>
+<input type="text" id="scanHost" placeholder="scanme.nmap.org" value="scanme.nmap.org" />
+<label>Ports (separate with comma or range 1-1000)</label>
+<input type="text" id="scanPorts" placeholder="22,80,443" value="22,80,443,8080" />
+<button onclick="scanPorts()">Scan</button>
+<div class="output-box" id="scanOutput">Click Scan to start...</div>
 </div>
+
+<div class="card">
+<h3>IP Info Lookup</h3>
+<label>IP Address</label>
+<input type="text" id="ipInput" placeholder="8.8.8.8" />
+<button onclick="lookupIP()">Lookup</button>
+<div class="output-box" id="ipOutput"></div>
+</div>
+
+<div class="card">
+<h3>QR Code Generator</h3>
+<label>Text / URL</label>
+<input type="text" id="qrInput" placeholder="https://github.com/NullSec8" />
+<button onclick="genQR()">Generate</button>
+<div class="output-box" id="qrOutput" style="text-align:center"></div>
+</div>
+
+</div>
+</div>
+
+<!-- SECTION 2: LINUX COMMANDS -->
+<div id="section-linux" class="section">
+<h2>Linux Command Cheat Sheet</h2>
+<div class="card search-box">
+<input type="text" id="linuxSearch" placeholder="Search commands (e.g. grep, file, network)..." oninput="filterCommands()" />
+</div>
+<div class="card">
+<table>
+<thead><tr><th onclick="sortLinux('cmd')">Command</th><th onclick="sortLinux('desc')">Description</th><th onclick="sortLinux('cat')">Category</th><th>Example</th></tr></thead>
+<tbody id="linuxTable"></tbody>
+</table>
+</div>
+</div>
+
+<!-- SECTION 3: GITHUB STATS -->
+<div id="section-github" class="section">
+<h2>GitHub Dashboard</h2>
+<div class="card">
+<label>GitHub Username</label>
+<input type="text" id="ghUser" placeholder="NullSec8" value="NullSec8" />
+<button onclick="fetchGitHub()">Fetch Stats</button>
+<button onclick="fetchGitHubPRs()" class="sec">Fetch PRs</button>
+</div>
+<div id="ghStats"></div>
+<div id="ghPRs"></div>
+</div>
+
+<!-- SECTION 4: CTF KIT -->
+<div id="section-ctf" class="section">
+<h2>CTF Toolkit</h2>
+<div class="row">
+
+<div class="card">
+<h3>Cipher Decoder</h3>
+<label>Text</label>
+<input type="text" id="cipherInput" placeholder="Enter cipher text..." />
+<label>Type</label>
+<select id="cipherType">
+<option value="rot13">ROT13</option>
+<option value="rot47">ROT47</option>
+<option value="atbash">Atbash</option>
+<option value="hex">Hex</option>
+<option value="binary">Binary</option>
+<option value="morse">Morse Code</option>
+</select>
+<button onclick="decodeCipher()">Decode</button>
+<div class="output-box" id="cipherOutput"></div>
+</div>
+
+<div class="card">
+<h3>Hex & Octal Converter</h3>
+<label>Value</label>
+<input type="text" id="convInput" placeholder="Enter number or hex..." />
+<label>From</label>
+<select id="convFrom">
+<option value="dec">Decimal</option>
+<option value="hex">Hex</option>
+<option value="oct">Octal</option>
+<option value="bin">Binary</option>
+</select>
+<label>To</label>
+<select id="convTo">
+<option value="hex">Hex</option>
+<option value="dec">Decimal</option>
+<option value="oct">Octal</option>
+<option value="bin">Binary</option>
+</select>
+<button onclick="convertBase()">Convert</button>
+<div class="output-box" id="convOutput"></div>
+</div>
+
+<div class="card">
+<h3>XOR Brute Force</h3>
+<label>Hex-encoded XOR ciphertext</label>
+<input type="text" id="xorInput" placeholder="e.g. 1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736" />
+<button onclick="xorBrute()">Brute Force</button>
+<div class="output-box" id="xorOutput"></div>
+</div>
+
+<div class="card">
+<h3>Hash Identifier</h3>
+<label>Hash</label>
+<input type="text" id="hashIdInput" placeholder="Paste a hash to identify..." />
+<button onclick="identifyHash()">Identify</button>
+<div class="output-box" id="hashIdOutput"></div>
+</div>
+
+</div>
+</div>
+
 </div>
 
 <script>
-const cmds = {
-  about: [
-    '<span class="info">NullSec8</span>',
-    '<span class="output">----------------</span>',
-    '<span class="output">Age: 17</span>',
-    '<span class="output">From: Kosovo</span>',
-    '<span class="output">Role: Full Stack Developer / Automation Engineer</span>',
-    '<span class="output">Interests: automation, web dev, security, open source</span>',
-    '<span class="output">Motto: Automate everything, break nothing</span>',
-  ],
-  skills: [
-    '<span class="info">Languages & Tools</span>',
-    '<span class="output">----------------</span>',
-    '<span class="output">Python | JavaScript | TypeScript | Node.js</span>',
-    '<span class="output">React | Next.js | GitHub Actions | Docker</span>',
-    '<span class="output">Linux | Bash | PowerShell | HTML/CSS</span>',
-    '<span class="output">PostgreSQL | MongoDB | Redis | Nginx</span>',
-  ],
-  projects: [
-    '<span class="info">Projects</span>',
-    '<span class="output">----------------</span>',
-    '<span class="output"><a href="https://github.com/NullSec8/daily-log" target="_blank">daily-log</a> - Automated daily commits & PRs</span>',
-    '<span class="output"><a href="https://github.com/NullSec8/nullsec-terminal" target="_blank">nullsec-terminal</a> - Terminal portfolio (you are here)</span>',
-    '<span class="output"><a href="https://github.com/NullSec8" target="_blank">github.com/NullSec8</a> - More coming soon</span>',
-  ],
-  contact: [
-    '<span class="info">Contact</span>',
-    '<span class="output">----------------</span>',
-    '<span class="output">GitHub: <a href="https://github.com/NullSec8" target="_blank">NullSec8</a></span>',
-  ],
-  clear: [],
-  neofetch: [
-    '<span class="output">NullSec8@github</span>',
-    '<span class="output">OS: Arch Linux x86_64</span>',
-    '<span class="output">Host: GitHub Actions Runner</span>',
-    '<span class="output">Kernel: 6.0.0-arch1-1</span>',
-    '<span class="output">Age: 17</span>',
-    '<span class="output">From: Kosovo</span>',
-    '<span class="output">Role: Full Stack Developer / Automation Engineer</span>',
-    '<span class="output">Shell: bash 5.2.37</span>',
-    '<span class="output">Uptime: 365 days</span>',
-    '<span class="output">Packages: 42 (npm), 16 (pip)</span>',
-  ],
-  whoami: ['<span class="output">nullsec8</span>'],
-  date: ['<span class="output">' + new Date().toLocaleString() + '</span>'],
-  uptime: ['<span class="output">up 365 days, 0 users, load average: 0.00 0.01 0.05</span>'],
-  uname: ['<span class="output">Linux github-actions 6.0.0-arch1-1 #1 SMP PREEMPT_DYNAMIC x86_64 GNU/Linux</span>'],
-  pwd: ['<span class="output">/home/nullsec8/portfolio</span>'],
-  ls: [
-    '<span class="output">about.txt   skills/   projects/   contact   achievements.log   README.md</span>',
-  ],
-  help: [
-    '<span class="info">Available commands:</span>',
-    '<span class="output">----------------</span>',
-    '<span class="cmd">about</span>      <span class="dim">- About me</span>',
-    '<span class="cmd">skills</span>     <span class="dim">- My tech stack</span>',
-    '<span class="cmd">projects</span>   <span class="dim">- My projects</span>',
-    '<span class="cmd">contact</span>    <span class="dim">- Where to find me</span>',
-    '<span class="cmd">neofetch</span>   <span class="dim">- System info</span>',
-    '<span class="cmd">whoami</span>     <span class="dim">- Display username</span>',
-    '<span class="cmd">date</span>       <span class="dim">- Current date</span>',
-    '<span class="cmd">uptime</span>     <span class="dim">- System uptime</span>',
-    '<span class="cmd">uname</span>      <span class="dim">- Kernel info</span>',
-    '<span class="cmd">pwd</span>        <span class="dim">- Current directory</span>',
-    '<span class="cmd">ls</span>         <span class="dim">- List files</span>',
-    '<span class="cmd">echo</span>       <span class="dim">- Print text</span>',
-    '<span class="cmd">sudo</span>       <span class="dim">- Try it ;)</span>',
-    '<span class="cmd">matrix</span>     <span class="dim">- Toggle matrix rain</span>',
-    '<span class="cmd"></span>        <span class="dim"></span>',
-    '<span class="cmd">clear</span>      <span class="dim">- Clear terminal</span>',
-    '<span class="cmd">help</span>       <span class="dim">- Show this</span>',
-  ],
-  sudo: [
-    '<span class="error">sudo: permission denied</span>',
-    '<span class="dim">This incident will be reported.</span>',
-  ],
-  matrix: ['<span class="highlight">Matrix rain toggled!</span>'],
-};
-
-const history = [];
-let histIdx = -1;
-let matrixOn = false;
-let matrixInterval = null;
-
-const output = document.getElementById('output');
-const input = document.getElementById('cmdInput');
-
-function addLine(html, className) {
-  const div = document.createElement('div');
-  div.className = 'line ' + (className || '');
-  div.innerHTML = html;
-  output.insertBefore(div, output.lastElementChild);
-  div.scrollIntoView();
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
+  document.querySelectorAll('nav a').forEach(function(a) { a.classList.remove('active'); });
+  document.getElementById('section-' + id).classList.add('active');
+  document.querySelector('nav a[onclick*="' + id + '"]').classList.add('active');
 }
 
-input.addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') {
-    const val = this.value.trim();
-    addLine('<span class="prompt">nullsec8@github:~$</span><span class="cmd"> ' + val + '</span>');
-    
-    if (val !== '') history.push(val);
-    histIdx = history.length;
-
-    const lower = val.toLowerCase().split(' ');
-    const cmd = lower[0];
-    const args = lower.slice(1).join(' ');
-
-    if (cmd === 'clear') {
-      while (output.children.length > 1) output.removeChild(output.firstChild);
-    } else if (cmd === 'echo') {
-      addLine(args || '', 'output');
-    } else if (cmd === 'matrix') {
-      matrixOn = !matrixOn;
-      if (matrixOn) startMatrix(); else stopMatrix();
-      addLine(cmds.matrix[0], 'highlight');
-    } else if (cmd === 'ls' && args) {
-      addLine('ls: cannot access ' + args + ': No such file or directory', 'error');
-    } else if (cmds[cmd]) {
-      cmds[cmd].forEach(function(line) { addLine(line, 'output'); });
-    } else if (cmd !== '') {
-      addLine('bash: ' + cmd + ': command not found', 'error');
-    }
-
-    this.value = '';
-    output.scrollTop = output.scrollHeight;
-  } else if (e.key === 'ArrowUp') {
-    e.preventDefault();
-    if (histIdx > 0) { histIdx--; this.value = history[histIdx]; }
-  } else if (e.key === 'ArrowDown') {
-    e.preventDefault();
-    if (histIdx < history.length - 1) { histIdx++; this.value = history[histIdx]; }
-    else { histIdx = history.length; this.value = ''; }
-  } else if (e.key === 'Tab') {
-    e.preventDefault();
-    const val = this.value.toLowerCase();
-    const matches = Object.keys(cmds).filter(function(c) { return c.startsWith(val) && c !== 'clear'; });
-    if (matches.length === 1) this.value = matches[0];
-    else if (matches.length > 1) {
-      addLine('<span class="dim">' + matches.join('  ') + '</span>');
+/* TOOLS */
+function generateHash() {
+  var t = document.getElementById('hashInput').value || '';
+  var md5 = t ? CryptoJS.MD5(t).toString() : '';
+  var sha256 = t ? CryptoJS.SHA256(t).toString() : '';
+  var sha512 = t ? CryptoJS.SHA512(t).toString() : '';
+  document.getElementById('hashOutput').innerHTML = 'MD5: ' + (md5 || '') + '<br>SHA256: ' + (sha256 || '') + '<br>SHA512: ' + (sha512 || '');
+}
+function b64Encode() {
+  var v = document.getElementById('b64Input').value;
+  try { document.getElementById('b64Output').textContent = btoa(v); } catch(e) { document.getElementById('b64Output').textContent = 'Error: ' + e.message; }
+}
+function b64Decode() {
+  var v = document.getElementById('b64Input').value;
+  try { document.getElementById('b64Output').textContent = atob(v); } catch(e) { document.getElementById('b64Output').textContent = 'Error: ' + e.message; }
+}
+function genPassword() {
+  var len = parseInt(document.getElementById('pwLen').textContent);
+  var opts = document.getElementById('pwOptions');
+  var chars = '';
+  for (var i = 0; i < opts.options.length; i++) {
+    if (opts.options[i].selected) {
+      if (opts.options[i].value === 'upper') chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      if (opts.options[i].value === 'lower') chars += 'abcdefghijklmnopqrstuvwxyz';
+      if (opts.options[i].value === 'digits') chars += '0123456789';
+      if (opts.options[i].value === 'symbols') chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
     }
   }
-});
+  if (!chars) { document.getElementById('pwOutput').textContent = 'Select at least one option'; return; }
+  var pw = '';
+  for (var i = 0; i < len; i++) pw += chars[Math.floor(Math.random() * chars.length)];
+  window._lastPw = pw;
+  document.getElementById('pwOutput').textContent = pw;
+}
+function copyPassword() {
+  if (window._lastPw) { navigator.clipboard.writeText(window._lastPw); alert('Copied!'); }
+}
+function scanPorts() {
+  var host = document.getElementById('scanHost').value;
+  var ports = document.getElementById('scanPorts').value;
+  document.getElementById('scanOutput').innerHTML = 'Scanning ' + host + ' (simulated)...<br>';
+  var list = [];
+  ports.split(',').forEach(function(p) { var n = parseInt(p.trim()); if (n) list.push(n); });
+  var out = document.getElementById('scanOutput');
+  list.forEach(function(p, i) {
+    setTimeout(function() {
+      // Simulate: common ports open
+      var common = [22, 80, 443, 8080, 21, 3306];
+      var status = common.indexOf(p) !== -1 ? 'OPEN' : 'filtered';
+      var color = common.indexOf(p) !== -1 ? '#00FF00' : '#FFAA00';
+      out.innerHTML += '<span style="color:' + color + '">Port ' + p + '/' + p + ' ' + status + '</span><br>';
+    }, i * 500);
+  });
+}
+function lookupIP() {
+  var ip = document.getElementById('ipInput').value || '8.8.8.8';
+  fetch('https://ipapi.co/' + ip + '/json/').then(function(r) { return r.json(); }).then(function(d) {
+    document.getElementById('ipOutput').innerHTML = 'IP: ' + d.ip + '<br>City: ' + d.city + '<br>Region: ' + d.region + '<br>Country: ' + d.country_name + '<br>ISP: ' + d.org + '<br>Timezone: ' + d.timezone;
+  }).catch(function() {
+    document.getElementById('ipOutput').textContent = 'Could not fetch IP info. Try again.';
+  });
+}
+function genQR() {
+  var t = document.getElementById('qrInput').value || 'https://github.com/NullSec8';
+  document.getElementById('qrOutput').innerHTML = '<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + encodeURIComponent(t) + '" alt="QR" style="border-radius:4px" />';
+}
 
-function startMatrix() {
-  const bg = document.getElementById('matrixBg');
-  bg.innerHTML = '';
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()';
-  for (let i = 0; i < 50; i++) {
-    const col = document.createElement('div');
-    col.style.cssText = 'position:absolute;top:' + (Math.random() * 100) + '%;left:' + (i * 2) + '%;font-size:10px;color:#00FF00';
-    col.textContent = chars[Math.floor(Math.random() * chars.length)];
-    bg.appendChild(col);
+/* LINUX COMMANDS */
+var linuxCmds = [
+  {cmd:'ls',desc:'List directory contents',cat:'file',ex:'ls -la /home'},
+  {cmd:'cd',desc:'Change directory',cat:'file',ex:'cd /var/log'},
+  {cmd:'pwd',desc:'Print working directory',cat:'file',ex:'pwd'},
+  {cmd:'mkdir',desc:'Create directory',cat:'file',ex:'mkdir -p dir1/dir2'},
+  {cmd:'rm',desc:'Remove files/dirs',cat:'file',ex:'rm -rf temp/'},
+  {cmd:'cp',desc:'Copy files',cat:'file',ex:'cp file.txt backup/'},
+  {cmd:'mv',desc:'Move/rename files',cat:'file',ex:'mv old.txt new.txt'},
+  {cmd:'cat',desc:'View file contents',cat:'file',ex:'cat /etc/passwd'},
+  {cmd:'less',desc:'View file page by page',cat:'file',ex:'less large.log'},
+  {cmd:'head',desc:'First lines of file',cat:'file',ex:'head -20 file.txt'},
+  {cmd:'tail',desc:'Last lines of file',cat:'file',ex:'tail -f /var/log/syslog'},
+  {cmd:'touch',desc:'Create empty file',cat:'file',ex:'touch newfile.txt'},
+  {cmd:'chmod',desc:'Change permissions',cat:'file',ex:'chmod +x script.sh'},
+  {cmd:'chown',desc:'Change owner',cat:'file',ex:'chown user:group file'},
+  {cmd:'find',desc:'Search files',cat:'file',ex:'find / -name "*.conf"'},
+  {cmd:'grep',desc:'Search text',cat:'text',ex:'grep -r "error" /var/log/'},
+  {cmd:'sed',desc:'Stream editor',cat:'text',ex:"sed 's/old/new/g' file.txt"},
+  {cmd:'awk',desc:'Text processing',cat:'text',ex:"awk '{print \$1}' file.txt"},
+  {cmd:'sort',desc:'Sort lines',cat:'text',ex:'sort -u names.txt'},
+  {cmd:'wc',desc:'Count lines/words/chars',cat:'text',ex:'wc -l file.txt'},
+  {cmd:'ps',desc:'Process list',cat:'proc',ex:'ps aux | grep nginx'},
+  {cmd:'top',desc:'Process monitor',cat:'proc',ex:'top'},
+  {cmd:'kill',desc:'Kill process',cat:'proc',ex:'kill -9 1234'},
+  {cmd:'systemctl',desc:'Manage systemd services',cat:'proc',ex:'systemctl restart nginx'},
+  {cmd:'journalctl',desc:'View system logs',cat:'proc',ex:'journalctl -xe'},
+  {cmd:'df',desc:'Disk space',cat:'disk',ex:'df -h'},
+  {cmd:'du',desc:'Disk usage',cat:'disk',ex:'du -sh /home'},
+  {cmd:'mount',desc:'Mount filesystem',cat:'disk',ex:'mount /dev/sda1 /mnt'},
+  {cmd:'fdisk',desc:'Partition table',cat:'disk',ex:'fdisk -l'},
+  {cmd:'ping',desc:'Test connectivity',cat:'net',ex:'ping -c 4 google.com'},
+  {cmd:'curl',desc:'HTTP requests',cat:'net',ex:'curl -I https://example.com'},
+  {cmd:'wget',desc:'Download files',cat:'net',ex:'wget https://example.com/file'},
+  {cmd:'ssh',desc:'SSH connection',cat:'net',ex:'ssh user@host'},
+  {cmd:'scp',desc:'Secure copy',cat:'net',ex:'scp file.txt user@host:/home/'},
+  {cmd:'netstat',desc:'Network stats',cat:'net',ex:'netstat -tulpn'},
+  {cmd:'ss',desc:'Socket stats',cat:'net',ex:'ss -tuln'},
+  {cmd:'tcpdump',desc:'Capture packets',cat:'net',ex:'tcpdump -i eth0'},
+  {cmd:'nmap',desc:'Port scanner',cat:'net',ex:'nmap -sV scanme.nmap.org'},
+  {cmd:'ifconfig',desc:'Network config',cat:'net',ex:'ifconfig'},
+  {cmd:'ip',desc:'IP config (modern)',cat:'net',ex:'ip addr show'},
+  {cmd:'tar',desc:'Archive files',cat:'archive',ex:'tar -czf archive.tar.gz dir/'},
+  {cmd:'zip',desc:'Zip files',cat:'archive',ex:'zip -r archive.zip dir/'},
+  {cmd:'unzip',desc:'Unzip files',cat:'archive',ex:'unzip archive.zip'},
+  {cmd:'gzip',desc:'Compress files',cat:'archive',ex:'gzip file.txt'},
+  {cmd:'whoami',desc:'Current user',cat:'user',ex:'whoami'},
+  {cmd:'id',desc:'User ID info',cat:'user',ex:'id'},
+  {cmd:'sudo',desc:'Superuser do',cat:'user',ex:'sudo apt update'},
+  {cmd:'passwd',desc:'Change password',cat:'user',ex:'passwd'},
+  {cmd:'cron',desc:'Schedule tasks',cat:'user',ex:'crontab -e'},
+  {cmd:'alias',desc:'Create alias',cat:'user',ex:"alias ll='ls -la'"},
+  {cmd:'apt',desc:'Package manager',cat:'pkg',ex:'apt install nginx'},
+  {cmd:'apt-get',desc:'Package manager',cat:'pkg',ex:'apt-get update'},
+  {cmd:'dpkg',desc:'Debian packages',cat:'pkg',ex:'dpkg -i package.deb'},
+  {cmd:'yum',desc:'RPM package manager',cat:'pkg',ex:'yum install httpd'},
+  {cmd:'dnf',desc:'DNF package manager',cat:'pkg',ex:'dnf install neovim'},
+  {cmd:'pacman',desc:'Arch package manager',cat:'pkg',ex:'pacman -Syu'},
+  {cmd:'uname',desc:'Kernel info',cat:'sys',ex:'uname -a'},
+  {cmd:'dmesg',desc:'Kernel messages',cat:'sys',ex:'dmesg | tail'},
+  {cmd:'lspci',desc:'PCI devices',cat:'sys',ex:'lspci'},
+  {cmd:'lsusb',desc:'USB devices',cat:'sys',ex:'lsusb'},
+  {cmd:'lscpu',desc:'CPU info',cat:'sys',ex:'lscpu'},
+  {cmd:'free',desc:'Memory usage',cat:'sys',ex:'free -h'},
+  {cmd:'history',desc:'Command history',cat:'user',ex:'history'},
+  {cmd:'man',desc:'Manual pages',cat:'help',ex:'man ls'},
+  {cmd:'whatis',desc:'Command description',cat:'help',ex:'whatis ls'},
+  {cmd:'which',desc:'Locate a command',cat:'help',ex:'which python'},
+  {cmd:'echo',desc:'Print text',cat:'text',ex:'echo "Hello World"'},
+  {cmd:'env',desc:'Environment variables',cat:'sys',ex:'env | grep PATH'},
+  {cmd:'export',desc:'Set environment var',cat:'sys',ex:'export PATH=\$PATH:/new/path'},
+  {cmd:'source',desc:'Execute script in shell',cat:'user',ex:'source ~/.bashrc'},
+  {cmd:'screen',desc:'Terminal multiplexer',cat:'proc',ex:'screen -S session'},
+  {cmd:'tmux',desc:'Terminal multiplexer',cat:'proc',ex:'tmux new -s session'},
+];
+var linuxSorted = {col:'cmd',dir:1};
+
+function renderLinux(cmds) {
+  var tbody = document.getElementById('linuxTable');
+  tbody.innerHTML = '';
+  cmds.forEach(function(c) {
+    tbody.innerHTML += '<tr><td><span class="badge green">' + c.cmd + '</span></td><td>' + c.desc + '</td><td><span class="badge blue">' + c.cat + '</span></td><td><code style="color:#FFAA00">' + c.ex + '</code></td></tr>';
+  });
+}
+function filterCommands() {
+  var q = document.getElementById('linuxSearch').value.toLowerCase();
+  var filtered = linuxCmds.filter(function(c) { return c.cmd.indexOf(q) !== -1 || c.desc.toLowerCase().indexOf(q) !== -1 || c.cat.indexOf(q) !== -1; });
+  renderLinux(filtered);
+}
+function sortLinux(col) {
+  linuxSorted.dir *= -1;
+  linuxCmds.sort(function(a,b) { return a[col] > b[col] ? linuxSorted.dir : a[col] < b[col] ? -linuxSorted.dir : 0; });
+  filterCommands();
+}
+renderLinux(linuxCmds);
+
+/* GITHUB STATS */
+function fetchGitHub() {
+  var user = document.getElementById('ghUser').value || 'NullSec8';
+  var out = document.getElementById('ghStats');
+  out.innerHTML = '<div class="card"><div class="output-box">Loading...</div></div>';
+  fetch('https://api.github.com/users/' + user).then(function(r) { return r.json(); }).then(function(u) {
+    fetch('https://api.github.com/users/' + user + '/repos?per_page=100').then(function(r) { return r.json(); }).then(function(repos) {
+      var stars = 0, forks = 0, langs = {};
+      repos.forEach(function(r) { stars += r.stargazers_count; forks += r.forks_count; if (r.language) langs[r.language] = (langs[r.language] || 0) + 1; });
+      var langList = Object.keys(langs).sort(function(a,b) { return langs[b] - langs[a]; }).slice(0,5).join(', ');
+      out.innerHTML = '<div class="two-col">' +
+        '<div class="card"><h3>User Info</h3><div class="output-box">Login: ' + u.login + '<br>Name: ' + (u.name || 'N/A') + '<br>Bio: ' + (u.bio || 'N/A') + '<br>Location: ' + (u.location || 'N/A') + '<br>Public Repos: ' + u.public_repos + '<br>Followers: ' + u.followers + '<br>Following: ' + u.following + '</div></div>' +
+        '<div class="card"><h3>Repo Stats</h3><div class="output-box">Total Repos: ' + repos.length + '<br>Total Stars: ' + stars + '<br>Total Forks: ' + forks + '<br>Top Languages: ' + langList + '</div></div>' +
+        '</div>';
+    });
+  }).catch(function() { out.innerHTML = '<div class="card"><div class="output-box">Error fetching user. Try again.</div></div>'; });
+}
+function fetchGitHubPRs() {
+  var user = document.getElementById('ghUser').value || 'NullSec8';
+  var out = document.getElementById('ghPRs');
+  out.innerHTML = '<div class="card"><h3>Recent PRs</h3><div class="output-box">Loading...</div></div>';
+  fetch('https://api.github.com/search/issues?q=author:' + user + '+type:pr&sort=created&order=desc&per_page=10').then(function(r) { return r.json(); }).then(function(d) {
+    var html = '<div class="card"><h3>Recent PRs</h3><div class="output-box">';
+    if (d.items && d.items.length) {
+      d.items.forEach(function(pr) {
+        html += '<span style="color:#888">#' + pr.number + '</span> <a href="' + pr.html_url + '" target="_blank" style="color:#00FF00">' + pr.title + '</a>';
+        html += ' <span class="badge ' + (pr.state === 'open' ? 'green' : 'yellow') + '">' + pr.state + '</span>';
+        html += ' <span style="color:#666">' + pr.repository_url.split('/').slice(-2).join('/') + '</span><br>';
+      });
+    } else { html += 'No PRs found.'; }
+    html += '</div></div>';
+    out.innerHTML = html;
+  }).catch(function() { out.innerHTML = '<div class="card"><div class="output-box">Error.</div></div>'; });
+}
+
+/* CTF TOOLS */
+function decodeCipher() {
+  var t = document.getElementById('cipherInput').value;
+  var type = document.getElementById('cipherType').value;
+  var out = document.getElementById('cipherOutput');
+  var result = '';
+  switch(type) {
+    case 'rot13': result = t.replace(/[a-zA-Z]/g,function(c){return String.fromCharCode(c<='Z'?65:97+(c.charCodeAt(0)-(c<='Z'?65:97)+13)%26);}); break;
+    case 'rot47': result = t.replace(/[!-~]/g,function(c){return String.fromCharCode(33+(c.charCodeAt(0)-33+47)%94);}); break;
+    case 'atbash': result = t.replace(/[a-zA-Z]/g,function(c){var a=c<='Z'?65:97;return String.fromCharCode(a+25-(c.charCodeAt(0)-a));}); break;
+    case 'hex': result = t.split(' ').map(function(h){return String.fromCharCode(parseInt(h,16));}).join(''); break;
+    case 'binary': result = t.split(' ').map(function(b){return String.fromCharCode(parseInt(b,2));}).join(''); break;
+    case 'morse': var morse={'.-':'A','-...':'B','-.-.':'C','-..':'D','.':'E','..-.':'F','--.':'G','....':'H','..':'I','.---':'J','-.-':'K','.-..':'L','--':'M','-.':'N','---':'O','.--.':'P','--.-':'Q','.-.':'R','...':'S','-':'T','..-':'U','...-':'V','.--':'W','-..-':'X','-.--':'Y','--..':'Z','-----':'0','.----':'1','..---':'2','...--':'3','....-':'4','.....':'5','-....':'6','--...':'7','---..':'8','----.':'9'}; result = t.split('/').map(function(w){return w.trim().split(' ').map(function(c){return morse[c]||c;}).join('');}).join(' '); break;
   }
-  let lastTime = 0;
-  matrixInterval = setInterval(function() {
-    const cols = bg.children;
-    for (let i = 0; i < cols.length; i++) {
-      const top = parseFloat(cols[i].style.top);
-      cols[i].style.top = ((top + 2) % 100) + '%';
-      if (Math.random() < 0.1) cols[i].textContent = chars[Math.floor(Math.random() * chars.length)];
+  out.textContent = result || 'No output';
+}
+function convertBase() {
+  var v = document.getElementById('convInput').value;
+  var from = document.getElementById('convFrom').value;
+  var to = document.getElementById('convTo').value;
+  var dec;
+  if (from === 'dec') dec = parseInt(v, 10);
+  else if (from === 'hex') dec = parseInt(v, 16);
+  else if (from === 'oct') dec = parseInt(v, 8);
+  else if (from === 'bin') dec = parseInt(v, 2);
+  if (isNaN(dec)) { document.getElementById('convOutput').textContent = 'Invalid input'; return; }
+  var result;
+  if (to === 'dec') result = dec.toString(10);
+  else if (to === 'hex') result = dec.toString(16).toUpperCase();
+  else if (to === 'oct') result = dec.toString(8);
+  else if (to === 'bin') result = dec.toString(2);
+  document.getElementById('convOutput').textContent = result;
+}
+function xorBrute() {
+  var hex = document.getElementById('xorInput').value;
+  var out = document.getElementById('xorOutput');
+  out.innerHTML = 'Brute forcing...<br>';
+  var bytes = [];
+  for (var i = 0; i < hex.length; i += 2) bytes.push(parseInt(hex.substr(i, 2), 16));
+  for (var key = 0; key < 256; key++) {
+    var dec = '';
+    var printable = true;
+    for (var i = 0; i < bytes.length; i++) {
+      var c = bytes[i] ^ key;
+      if (c < 32 || c > 126) { printable = false; break; }
+      dec += String.fromCharCode(c);
     }
-  }, 100);
+    if (printable) out.innerHTML += 'Key ' + key + ' (' + String.fromCharCode(key) + '): ' + dec + '<br>';
+    if (key % 32 === 31) { /* yield */ }
+  }
 }
-
-function stopMatrix() {
-  if (matrixInterval) clearInterval(matrixInterval);
-  document.getElementById('matrixBg').innerHTML = '';
+function identifyHash() {
+  var h = document.getElementById('hashIdInput').value;
+  var len = h.length;
+  var info = [];
+  if (len === 32) info.push('MD5, LM, NTLM');
+  if (len === 40) info.push('SHA1, MySQL5, MySQL');
+  if (len === 56) info.push('SHA224, SHA256/224');
+  if (len === 64) info.push('SHA256');
+  if (len === 96) info.push('SHA384');
+  if (len === 128) info.push('SHA512');
+  if (h.startsWith('$2y$') || h.startsWith('$2a$') || h.startsWith('$2b$')) info.push('bcrypt');
+  if (h.startsWith('$1$')) info.push('MD5 Crypt');
+  if (h.startsWith('$5$')) info.push('SHA256 Crypt');
+  if (h.startsWith('$6$')) info.push('SHA512 Crypt');
+  document.getElementById('hashIdOutput').textContent = info.length ? 'Possible: ' + info.join(', ') : 'Unknown hash type';
 }
-
-input.focus();
-document.addEventListener('click', function() { input.focus(); });
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
 </body>
 </html>
